@@ -1,151 +1,122 @@
     <?php include('partials-frontend/menu.php');?>
 
-    <!-- fOOD sEARCH Section Starts Here -->
-    <section class="food-search text-center">
-        <div class="container">
-            
-            <form action="<?php echo SITEURL; ?>food-search.php" method="POST">
-                <input type="search" name="search" placeholder="Search for Food.." required>
-                <input type="submit" name="submit" value="Search" class="btn btn-primary">
-            </form>
+<!-- Food Search Section Starts Here -->
+<section class="bg-orange-100 py-10">
+  <div class="container mx-auto px-4 text-center">
+    <form action="<?php echo SITEURL; ?>food-search.php" method="POST" class="flex flex-col sm:flex-row justify-center gap-4">
+      <input type="search" name="search" placeholder="Search for Food.." required
+             class="px-4 py-2 w-full sm:w-96 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400" />
+      <input type="submit" name="submit" value="Search"
+             class="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 transition duration-300" />
+    </form>
+  </div>
+</section>
+<!-- Food Search Section Ends Here -->
 
-        </div>
-    </section>
-    <!-- fOOD sEARCH Section Ends Here -->
+<!-- Order Message -->
+<?php 
+if (isset($_SESSION['order'])){
+    echo "<div class='text-center text-green-600 font-semibold py-4'>{$_SESSION['order']}</div>";
+    unset($_SESSION['order']);
+}
+?>
+
+<!-- Categories Section Starts Here -->
+<section class="py-12 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Explore Foods</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
     <?php 
-        if (isset($_SESSION['order'])){
-            echo $_SESSION['order'];
-            unset ($_SESSION['order']);
+    $sql = "SELECT * FROM category WHERE active='Yes' AND featured = 'Yes' LIMIT 3";
+    $res = mysqli_query($conn, $sql);
+    $count = mysqli_num_rows($res);
+
+    if($count > 0) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $id = $row['id'];
+            $title = $row['title'];
+            $image_name = $row['image_name'];
+            $image_path = SITEURL . "images/category/" . $image_name;
+    ?>
+      <a href="<?php echo SITEURL; ?>category-foods.php?category_id=<?php echo $id; ?>" class="group block rounded-lg overflow-hidden shadow-md hover:shadow-xl transition">
+        <?php if ($image_name == ""): ?>
+          <div class="bg-gray-200 h-48 flex items-center justify-center text-gray-500">Image Not Available</div>
+        <?php else: ?>
+          <img src="<?php echo $image_path; ?>" alt="<?php echo $title; ?>" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+        <?php endif; ?>
+        <div class="bg-orange-500 text-white text-center py-3 text-lg font-semibold">
+          <?php echo $title; ?>
+        </div>
+      </a>
+    <?php
         }
+    } else {
+        echo "<div class='text-red-500 text-center'>Category Not Available</div>";
+    }
     ?>
 
-    <!-- CAtegories Section Starts Here -->
-    <section class="categories">
-        <div class="container">
-            <h2 class="text-center">Explore Foods</h2>\
+    </div>
+  </div>
+</section>
+<!-- Categories Section Ends Here -->
 
-            <?php 
-            //sql to display cat from database
-            $sql = "SELECT * FROM category  where active='Yes' AND featured = 'Yes' limit 3";
-            $res = mysqli_query($conn, $sql);
-            //check if cat available
-            $count = mysqli_num_rows($res);
+<!-- Food Menu Section Starts Here -->
+<section class="bg-gray-50 py-12">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Food Menu</h2>
 
-            if($count > 0)
-            {
-                while ($row=mysqli_fetch_assoc($res)){
-                    $id = $row['id'];
-                    $title = $row['title'];
-                    $image_name=$row['image_name'];
-                    ?>
-                    <a href="<?php echo SITEURL; ?>category-foods.php?category_id=<?php echo $id; ?>">
-                        <div class="box-3 float-container">
-                            
-                            <?php 
-                            //checking if img available or not
-                            if ($image_name=="")
-                            {
-                                echo "<div class='error'>Image Not Available</div>";
-                            }
-                            else
-                            {
-                                ?>
-                                <img src="<?php echo SITEURL; ?>images/category/<?php echo $image_name; ?>" alt="Pizza" class="img-responsive img-curve">
-                                <?php
-                            }
-                            ?>
-                            
-                            <h3 class="float-text text-white"><?php echo $title; ?></h3>
-                        </div>
-                    </a>
-                    <?php
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <?php 
+    $sql2 = "SELECT * FROM food WHERE active='Yes' AND featured = 'Yes' LIMIT 6";
+    $res2 = mysqli_query($conn, $sql2);
+    $count2 = mysqli_num_rows($res2);
 
-                }
-            }
-            else
-            {
-                //?cat not availabe
-                echo "<div class='error'>Category Not Available</div>";
-            }
-            ?>
-
-            
-
-            
-
-            <div class="clearfix"></div>
+    if($count2 > 0) {
+        while ($row = mysqli_fetch_assoc($res2)) {
+            $id = $row['id'];
+            $title = $row['title'];
+            $price = $row['price'];
+            $description = $row['description'];
+            $image_name = $row['image_name'];
+            $image_path = SITEURL . "images/food/" . $image_name;
+    ?>
+      <div class="flex gap-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition">
+        <div class="w-32 h-32 flex-shrink-0">
+          <?php if ($image_name == ""): ?>
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">Image Not Available</div>
+          <?php else: ?>
+            <img src="<?php echo $image_path; ?>" alt="<?php echo $title; ?>" class="w-full h-full object-cover rounded-md">
+          <?php endif; ?>
         </div>
-    </section>
-    <!-- Categories Section Ends Here -->
-
-    <!-- fOOD MEnu Section Starts Here -->
-    <section class="food-menu">
-        <div class="container">
-            <h2 class="text-center">Food Menu</h2>
-
-        <?php 
-        
-        $sql2 = "SELECT * FROM food  where active='Yes' AND featured = 'Yes' limit 6";
-        $res2 =  mysqli_query($conn, $sql2);
-        $count2=mysqli_num_rows($res2);
-        if($count2 > 0)
-            {
-                while ($row=mysqli_fetch_assoc($res2)){
-                    $id = $row['id'];
-                    $title = $row['title'];
-                    $price = $row['price'];
-                    $description = $row['description'];
-                    $image_name=$row['image_name'];
-                    ?>
-                    <div class="food-menu-box">
-                        <div class="food-menu-img">
-                        <?php 
-                            //checking if img available or not
-                            if ($image_name=="")
-                            {
-                                echo "<div class='error'>Image Not Available. </div>";
-                            }
-                            else
-                            {
-                                ?>
-                                <img src="<?php echo SITEURL; ?>images/food/<?php echo $image_name; ?>" alt="Chicke Hawain Pizza" class="img-responsive img-curve">
-                                <?php
-                            }
-                            ?>
-                        </div>
-
-                        <div class="food-menu-desc">
-                            <h4><?php echo $title ?> </h4>
-                            <p class="food-price"><?php echo $price ?> Taka</p>
-                            <p class="food-detail">
-                                <?php echo $description ?></p>
-                            <br>
-
-                            <a href="<?php echo SITEURL; ?>order.php?food_id=<?php echo $id;?>" class="btn btn-primary">Order Now</a>
-                        </div>
-                    </div>
-                    <?php
-
-                }
-            }
-            else
-            {
-                //?cat not availabe
-                echo "<div class='error'>Food Not Available</div>";
-            }
-            ?>
-
-       
-            <div class="clearfix"></div>
-           
-
+        <div class="flex flex-col justify-between">
+          <div>
+            <h4 class="text-xl font-semibold text-gray-800"><?php echo $title; ?></h4>
+            <p class="text-orange-500 font-medium mb-1"><?php echo $price; ?> Taka</p>
+            <p class="text-gray-600 text-sm"><?php echo $description; ?></p>
+          </div>
+          <div class="mt-2">
+            <a href="<?php echo SITEURL; ?>order.php?food_id=<?php echo $id;?>" 
+               class="inline-block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition text-sm font-medium">
+              Order Now
+            </a>
+          </div>
         </div>
+      </div>
+    <?php
+        }
+    } else {
+        echo "<div class='text-red-500 text-center'>Food Not Available</div>";
+    }
+    ?>
+    </div>
 
-        <p class="text-center">
-        <a href="<?php echo SITEURL; ?>foods.php">See All Foods</a>
-        </p>
-    </section>
-    <!-- fOOD Menu Section Ends Here -->
+    <p class="text-center mt-10">
+      <a href="<?php echo SITEURL; ?>foods.php" class="text-orange-500 hover:underline font-medium">See All Foods</a>
+    </p>
+  </div>
+</section>
+<!-- Food Menu Section Ends Here -->
+
 
     <?php include('partials-frontend/footer.php');?>

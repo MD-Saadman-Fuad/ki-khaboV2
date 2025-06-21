@@ -9,6 +9,7 @@ include("login-check.php") ;
     <head>
         <title>Food Order Website - Home Page</title>
         <link rel="stylesheet" href="../css/admin.css">
+          <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body>
        <!-- menu start -->
