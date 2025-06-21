@@ -1,133 +1,96 @@
 <?php include('partials/menu.php'); ?>
 
-<div class="main-content">
-    <div class="wrapper">
-        <h1>Manage Food</h1>
+<!-- Manage Food Starts -->
+<div class="main-content py-10 px-4 bg-orange-50 min-h-screen">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Manage Foods</h1>
 
-        <br /><br />
+    <!-- Session Messages -->
+    <?php
+    $messages = ['add', 'delete', 'upload', 'unauthorize', 'update'];
+    foreach ($messages as $msg) {
+      if (isset($_SESSION[$msg])) {
+        echo "<div class='mb-4 px-4 py-3 rounded bg-green-100 text-green-800 font-medium shadow-sm'>{$_SESSION[$msg]}</div>";
+        unset($_SESSION[$msg]);
+      }
+    }
+    ?>
 
-                <!-- Button to Add Admin -->
-                <a href="<?php echo SITEURL; ?>admin/add-food.php" class="btn-primary">Add Food</a>
-
-                <br /><br /><br />
-
-                <?php 
-                    if(isset($_SESSION['add']))
-                    {
-                        echo $_SESSION['add'];
-                        unset($_SESSION['add']);
-                    }
-
-                    if(isset($_SESSION['delete']))
-                    {
-                        echo $_SESSION['delete'];
-                        unset($_SESSION['delete']);
-                    }
-
-                    if(isset($_SESSION['upload']))
-                    {
-                        echo $_SESSION['upload'];
-                        unset($_SESSION['upload']);
-                    }
-
-                    if(isset($_SESSION['unauthorize']))
-                    {
-                        echo $_SESSION['unauthorize'];
-                        unset($_SESSION['unauthorize']);
-                    }
-
-                    if(isset($_SESSION['update']))
-                    {
-                        echo $_SESSION['update'];
-                        unset($_SESSION['update']);
-                    }
-                
-                ?>
-
-                <table class="tbl-full">
-                    <tr>
-                        <th>Serial</th>
-                        <th>Title</th>
-                        <th>Price</th>
-                        <th>Image</th>
-                        <th>Featured</th>
-                        <th>Active</th>
-                        <th>Actions</th>
-                    </tr>
-
-                    <?php 
-                        
-                        $sql = "SELECT * FROM food";
-
-                        
-                        $res = mysqli_query($conn, $sql);
-
-                        
-                        $count = mysqli_num_rows($res);
-
-                        
-                        $serial=1;
-
-                        if($count>0)
-                        {
-                            
-                            while($row=mysqli_fetch_assoc($res))
-                            {
-                                
-                                $id = $row['id'];
-                                $title = $row['title'];
-                                $price = $row['price'];
-                                $image_name = $row['image_name'];
-                                $featured = $row['featured'];
-                                $active = $row['active'];
-                                ?>
-
-                                <tr>
-                                    <td><?php echo $serial++; ?>. </td>
-                                    <td><?php echo $title; ?></td>
-                                    <td><?php echo $price; ?> Taka</td>
-                                    <td>
-                                        <?php  
-                                            
-                                            if($image_name=="")
-                                            {
-                                                
-                                                echo "<div class='error'>Image not Added.</div>";
-                                            }
-                                            else
-                                            {
-                                                
-                                                ?>
-                                                <img src="<?php echo SITEURL; ?>images/food/<?php echo $image_name; ?>" width="100px">
-                                                <?php
-                                            }
-                                        ?>
-                                    </td>
-                                    <td><?php echo $featured; ?></td>
-                                    <td><?php echo $active; ?></td>
-                                    <td>
-                                        <a href="<?php echo SITEURL; ?>admin/update-food.php?id=<?php echo $id; ?>" 
-                                        class="btn-secondary">Update Food</a>
-                                        <a href="<?php echo SITEURL; ?>admin/delete-food.php?id=<?php echo $id; ?>
-                                        &image_name=<?php echo $image_name; ?>" class="btn-red">Delete Food</a>
-                                    </td>
-                                </tr>
-
-                                <?php
-                            }
-                        }
-                        else
-                        {
-                            
-                            echo "<tr> <td colspan='7' class='error'> Food not Added Yet. </td> </tr>";
-                        }
-
-                    ?>
-
-                    
-                </table>
+    <!-- Add Food Button -->
+    <div class="mb-6">
+      <a href="<?php echo SITEURL; ?>admin/add-food.php" 
+         class="inline-block bg-orange-500 text-white px-5 py-2 rounded-md hover:bg-orange-600 transition">
+        + Add Food
+      </a>
     </div>
-    
+
+    <!-- Food Table -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+      <table class="min-w-full text-sm text-left text-gray-700">
+        <thead class="bg-orange-500 text-white uppercase text-xs">
+          <tr>
+            <th class="px-6 py-3">Serial</th>
+            <th class="px-6 py-3">Title</th>
+            <th class="px-6 py-3">Price</th>
+            <th class="px-6 py-3">Image</th>
+            <th class="px-6 py-3">Featured</th>
+            <th class="px-6 py-3">Active</th>
+            <th class="px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <?php 
+          $sql = "SELECT * FROM food";
+          $res = mysqli_query($conn, $sql);
+          $count = mysqli_num_rows($res);
+          $serial = 1;
+
+          if ($count > 0) {
+            while ($row = mysqli_fetch_assoc($res)) {
+              $id = $row['id'];
+              $title = $row['title'];
+              $price = $row['price'];
+              $image_name = $row['image_name'];
+              $featured = $row['featured'];
+              $active = $row['active'];
+          ?>
+              <tr class="hover:bg-orange-50 transition">
+                <td class="px-6 py-4 font-medium"><?php echo $serial++; ?>.</td>
+                <td class="px-6 py-4"><?php echo $title; ?></td>
+                <td class="px-6 py-4"><?php echo $price; ?> Taka</td>
+                <td class="px-6 py-4">
+                  <?php if ($image_name == ""): ?>
+                    <div class="text-red-500 text-sm">Image Not Added</div>
+                  <?php else: ?>
+                    <img src="<?php echo SITEURL; ?>images/food/<?php echo $image_name; ?>" 
+                         class="w-24 h-16 object-cover rounded border border-gray-300" alt="<?php echo $title; ?>" />
+                  <?php endif; ?>
+                </td>
+                <td class="px-6 py-4"><?php echo $featured; ?></td>
+                <td class="px-6 py-4"><?php echo $active; ?></td>
+                <td class="px-6 py-4 space-x-2">
+                  <a href="<?php echo SITEURL; ?>admin/update-food.php?id=<?php echo $id; ?>" 
+                     class="inline-block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+                    Update
+                  </a>
+                  <a href="<?php echo SITEURL; ?>admin/delete-food.php?id=<?php echo $id; ?>&image_name=<?php echo $image_name; ?>" 
+                     class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                    Delete
+                  </a>
+                </td>
+              </tr>
+          <?php
+            }
+          } else {
+            echo "<tr><td colspan='7' class='text-center px-6 py-4 text-red-500'>Food not Added Yet</td></tr>";
+          }
+          ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+<!-- Manage Food Ends -->
+
 
 <?php include('partials/footer.php'); ?>
