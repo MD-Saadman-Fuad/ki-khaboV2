@@ -1,5 +1,28 @@
 
 <?php include("partials/menu.php") ?>
+
+    <?php 
+      if (isset($_POST['submit'])) {
+          $id = $_POST['id'];
+          $full_name = $_POST['full_name'];
+          $user_name = $_POST['user_name'];
+
+          $sql = "UPDATE admin SET 
+                  full_name = '$full_name',
+                  user_name = '$user_name'
+                  WHERE id = '$id'";
+
+          $res = mysqli_query($conn, $sql);
+
+          if ($res) {
+              $_SESSION['update'] = "<div class='text-green-600 font-medium text-center py-4'>Admin Updated Successfully</div>";
+          } else {
+              $_SESSION['update'] = "<div class='text-red-600 font-medium text-center py-4'>Failed to Update Admin. Try Again!</div>";
+          }
+
+          header('location:' . SITEURL . 'admin/manage-admin.php');
+      }
+    ?>
 <!-- Update Admin Starts -->
 <div class="main-content py-10 px-4 bg-orange-50 min-h-screen">
   <div class="max-w-xl mx-auto">
@@ -43,28 +66,7 @@
     </form>
     <!-- End Form -->
 
-    <?php 
-      if (isset($_POST['submit'])) {
-          $id = $_POST['id'];
-          $full_name = $_POST['full_name'];
-          $user_name = $_POST['user_name'];
 
-          $sql = "UPDATE admin SET 
-                  full_name = '$full_name',
-                  user_name = '$user_name'
-                  WHERE id = '$id'";
-
-          $res = mysqli_query($conn, $sql);
-
-          if ($res) {
-              $_SESSION['update'] = "<div class='text-green-600 font-medium text-center py-4'>Admin Updated Successfully</div>";
-          } else {
-              $_SESSION['update'] = "<div class='text-red-600 font-medium text-center py-4'>Failed to Update Admin. Try Again!</div>";
-          }
-
-          header('location:' . SITEURL . 'admin/manage-admin.php');
-      }
-    ?>
   </div>
 </div>
 <!-- Update Admin Ends -->

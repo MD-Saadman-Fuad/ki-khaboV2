@@ -3,62 +3,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact Us - Restaurant</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Navigation Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 min-h-screen py- lg:py- relative">
+  <div class="flex justify-center items-center py-2">
+    <nav class="w-full max-w-5xl flex justify-between items-center">
+      
+      <!-- Logo (separate from rounded menu background) -->
+      <div class="logo">
+        <a href="<?php echo SITEURL; ?>" title="Logo">
+          <img src="images/logo.png" alt="Restaurant Logo" class="h-20 w-auto">
+        </a>
+      </div>
 
-<!-- Navbar -->
-<nav class="bg-white shadow-md sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-20">
+      <!-- Menu inside rounded background -->
+      <div class="relative bg-gray-200 rounded-full px-1 py-1.2">
+        <!-- Moving indicator -->
+        <div id="indicator" class="absolute top-1 left-2 h-8 bg-orange-500 rounded-full transition-all duration-300 ease-in-out z-0" style="width: 100spx;"></div>
 
-      <!-- Logo -->
-      <a href="<?php echo SITEURL; ?>" class="flex items-center">
-        <img src="images/logo.png" alt="Restaurant Logo" class="h-20 w-auto">
-      </a>
+        <!-- Navigation items -->
+        <div class="flex relative z-11">
+          <a href="<?php echo SITEURL; ?>" class="nav-item px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 text-white">Home</a>
+          <a href="<?php echo SITEURL; ?>categories.php" class="nav-item px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-gray-800">Categories</a>
+          <a href="<?php echo SITEURL; ?>foods.php" class="nav-item px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-gray-800">Foods</a>
+          <a href="<?php echo SITEURL; ?>contact.php" class="nav-item px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-gray-800">Contact</a>
+          <a href="<?php echo SITEURL; ?>admin/login.php" class="nav-item px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-gray-800">Admin</a>
+        </div>
+      </div>
 
-      <!-- Mobile toggle -->
-      <button id="nav-toggle" class="lg:hidden text-gray-700 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-             viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
-      <!-- Desktop Menu -->
-      <ul id="nav-menu" class="hidden lg:flex items-center space-x-6 font-medium text-gray-700">
-        <li><a href="<?php echo SITEURL; ?>" class="hover:text-orange-500 transition duration-300">Home</a></li>
-        <li><a href="<?php echo SITEURL; ?>categories.php" class="hover:text-orange-500 transition duration-300">Categories</a></li>
-        <li><a href="<?php echo SITEURL; ?>foods.php" class="hover:text-orange-500 transition duration-300">Foods</a></li>
-        <li><a href="<?php echo SITEURL; ?>contact.php" class="hover:text-orange-500 transition duration-300">Contact</a></li>
-        <li>
-          <a href="<?php echo SITEURL; ?>admin/login.php" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
-            Admin
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="nav-mobile" class="lg:hidden hidden flex flex-col mt-4 space-y-2 text-gray-700 font-medium">
-      <a href="<?php echo SITEURL; ?>" class="hover:text-orange-500 transition">Home</a>
-      <a href="<?php echo SITEURL; ?>categories.php" class="hover:text-orange-500 transition">Categories</a>
-      <a href="<?php echo SITEURL; ?>foods.php" class="hover:text-orange-500 transition">Foods</a>
-      <a href="<?php echo SITEURL; ?>contact.php" class="hover:text-orange-500 transition">Contact</a>
-      <a href="<?php echo SITEURL; ?>admin/login.php" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
-        Admin
-      </a>
-    </div>
+    </nav>
   </div>
-</nav>
 
-<script>
-  const toggleBtn = document.getElementById('nav-toggle');
-  const mobileMenu = document.getElementById('nav-mobile');
-  toggleBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-  });
-</script>
+  <script>
+    const indicator = document.getElementById('indicator');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    navItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const itemRect = item.getBoundingClientRect();
+        const parentRect = item.parentElement.getBoundingClientRect();
+        const relativeLeft = itemRect.left - parentRect.left;
+
+        indicator.style.left = relativeLeft + 4  + 'px';
+        indicator.style.width = itemRect.width + 'px';
+
+        navItems.forEach(navItem => {
+          navItem.classList.remove('text-white');
+          navItem.classList.add('text-gray-600');
+        });
+        item.classList.remove('text-gray-600');
+        item.classList.add('text-white');
+      });
+    });
+
+    // Reset to Home
+    document.querySelector('.relative').addEventListener('mouseleave', () => {
+      const homeItem = navItems[0];
+      const homeRect = homeItem.getBoundingClientRect();
+      const parentRect = homeItem.parentElement.getBoundingClientRect();
+      const relativeLeft = homeRect.left - parentRect.left;
+
+      indicator.style.left = relativeLeft + 'px';
+      indicator.style.width = homeRect.width + 'px';
+
+      navItems.forEach(navItem => {
+        navItem.classList.remove('text-white');
+        navItem.classList.add('text-gray-600');
+      });
+      homeItem.classList.remove('text-gray-600');
+      homeItem.classList.add('text-white');
+    });
+  </script>

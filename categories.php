@@ -1,7 +1,7 @@
 <?php include('partials-frontend/menu.php');?>
 
 <!-- Categories Section Starts Here -->
-<section class="bg-gray-50 py-12">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 py-12">
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Explore Foods</h2>
 

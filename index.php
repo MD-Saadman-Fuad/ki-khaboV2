@@ -22,7 +22,7 @@ if (isset($_SESSION['order'])){
 ?>
 
 <!-- Categories Section Starts Here -->
-<section class="py-12 bg-white">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 py-12">
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Explore Foods</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -62,7 +62,7 @@ if (isset($_SESSION['order'])){
 <!-- Categories Section Ends Here -->
 
 <!-- Food Menu Section Starts Here -->
-<section class="bg-gray-50 py-12">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 py-12 ">
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Food Menu</h2>
 

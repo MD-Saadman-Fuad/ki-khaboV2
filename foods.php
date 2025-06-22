@@ -1,7 +1,7 @@
 <?php include('partials-frontend/menu.php');?>
 
  <!-- Food Search Section Starts Here -->
-<section class="bg-orange-100 py-10">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50  py-12">
   <div class="container mx-auto px-4 text-center">
     <form action="<?php echo SITEURL; ?>food-search.php" method="POST" class="flex flex-col sm:flex-row justify-center items-center gap-4">
       <input 
@@ -23,7 +23,7 @@
 <!-- Food Search Section Ends Here -->
 
 <!-- Food Menu Section Starts Here -->
-<section class="bg-white py-12">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 py-12">
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Food Menu</h2>
 
