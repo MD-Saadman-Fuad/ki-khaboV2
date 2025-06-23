@@ -143,7 +143,7 @@ if (isset($_POST['submit'])) {
         }
     </style>
 </head>
-<body class="min-h-screen gradient-bg relative ">
+<body class="min-h-screen gradient-bg relative py-6">
     <!-- Floating background shapes -->
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>

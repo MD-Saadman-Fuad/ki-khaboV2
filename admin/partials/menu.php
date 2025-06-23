@@ -17,7 +17,7 @@ include("login-check.php") ;
     <title>Animated Navigation Bar</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 min-h-screen py- lg:py- relative overflow-hidden"">
+<body class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 min-h-screen py- lg:py- relative">
   <div class="flex justify-center items-center py-2">
     <nav class="w-full max-w-5xl flex justify-between items-center">
       

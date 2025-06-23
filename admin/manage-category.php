@@ -199,6 +199,78 @@
             }
             ?>
 
+            <!-- Stats Cards -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 py-4">
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-blue-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Categories</p>
+                            <p class="text-2xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-layer-group text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-yellow-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Featured</p>
+                            <p class="text-2xl font-bold text-yellow-600">
+                                <?php 
+                                $featured_sql = "SELECT COUNT(*) as featured FROM category WHERE featured = 'Yes'";
+                                $featured_res = mysqli_query($conn, $featured_sql);
+                                $featured_count = mysqli_fetch_assoc($featured_res)['featured'] ?? 0;
+                                echo $featured_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-star text-yellow-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-green-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Active</p>
+                            <p class="text-2xl font-bold text-green-600">
+                                <?php 
+                                $active_sql = "SELECT COUNT(*) as active FROM category WHERE active = 'Yes'";
+                                $active_res = mysqli_query($conn, $active_sql);
+                                $active_count = mysqli_fetch_assoc($active_res)['active'] ?? 0;
+                                echo $active_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-toggle-on text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-purple-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">With Images</p>
+                            <p class="text-2xl font-bold text-purple-600">
+                                <?php 
+                                $images_sql = "SELECT COUNT(*) as with_images FROM category WHERE image_name != ''";
+                                $images_res = mysqli_query($conn, $images_sql);
+                                $images_count = mysqli_fetch_assoc($images_res)['with_images'] ?? 0;
+                                echo $images_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-image text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Add Category Button -->
             <div class="mb-8 animate-fade-in-up">
                 <a href="<?php echo SITEURL; ?>admin/add-category.php"
@@ -358,78 +430,6 @@
                             ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-blue-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Total Categories</p>
-                            <p class="text-2xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
-                        </div>
-                        <div class="bg-blue-100 p-3 rounded-full">
-                            <i class="fas fa-layer-group text-blue-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-yellow-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Featured</p>
-                            <p class="text-2xl font-bold text-yellow-600">
-                                <?php 
-                                $featured_sql = "SELECT COUNT(*) as featured FROM category WHERE featured = 'Yes'";
-                                $featured_res = mysqli_query($conn, $featured_sql);
-                                $featured_count = mysqli_fetch_assoc($featured_res)['featured'] ?? 0;
-                                echo $featured_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-yellow-100 p-3 rounded-full">
-                            <i class="fas fa-star text-yellow-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-green-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Active</p>
-                            <p class="text-2xl font-bold text-green-600">
-                                <?php 
-                                $active_sql = "SELECT COUNT(*) as active FROM category WHERE active = 'Yes'";
-                                $active_res = mysqli_query($conn, $active_sql);
-                                $active_count = mysqli_fetch_assoc($active_res)['active'] ?? 0;
-                                echo $active_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-green-100 p-3 rounded-full">
-                            <i class="fas fa-toggle-on text-green-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-purple-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">With Images</p>
-                            <p class="text-2xl font-bold text-purple-600">
-                                <?php 
-                                $images_sql = "SELECT COUNT(*) as with_images FROM category WHERE image_name != ''";
-                                $images_res = mysqli_query($conn, $images_sql);
-                                $images_count = mysqli_fetch_assoc($images_res)['with_images'] ?? 0;
-                                echo $images_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-purple-100 p-3 rounded-full">
-                            <i class="fas fa-image text-purple-600"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

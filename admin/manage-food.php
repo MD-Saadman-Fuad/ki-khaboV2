@@ -256,6 +256,78 @@
             }
             ?>
 
+            <!-- food Stats -->
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-4 gap-6 py-4">
+                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-blue-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Total Foods</p>
+                            <p class="text-3xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
+                        </div>
+                        <div class="bg-blue-100 p-4 rounded-full animate-float">
+                            <i class="fas fa-hamburger text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-yellow-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Featured</p>
+                            <p class="text-3xl font-bold text-yellow-600">
+                                <?php 
+                                $featured_sql = "SELECT COUNT(*) as featured FROM food WHERE featured = 'Yes'";
+                                $featured_res = mysqli_query($conn, $featured_sql);
+                                $featured_count = mysqli_fetch_assoc($featured_res)['featured'] ?? 0;
+                                echo $featured_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-yellow-100 p-4 rounded-full animate-float">
+                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-green-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Active</p>
+                            <p class="text-3xl font-bold text-green-600">
+                                <?php 
+                                $active_sql = "SELECT COUNT(*) as active FROM food WHERE active = 'Yes'";
+                                $active_res = mysqli_query($conn, $active_sql);
+                                $active_count = mysqli_fetch_assoc($active_res)['active'] ?? 0;
+                                echo $active_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-full animate-float">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-red-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 font-medium">Inactive</p>
+                            <p class="text-3xl font-bold text-red-600">
+                                <?php 
+                                $inactive_sql = "SELECT COUNT(*) as inactive FROM food WHERE active = 'No'";
+                                $inactive_res = mysqli_query($conn, $inactive_sql);
+                                $inactive_count = mysqli_fetch_assoc($inactive_res)['inactive'] ?? 0;
+                                echo $inactive_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-red-100 p-4 rounded-full animate-float">
+                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Add Food Button -->
             <div class="mb-8 animate-fade-in-up">
                 <a href="<?php echo SITEURL; ?>admin/add-food.php"
@@ -424,78 +496,6 @@
                             ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            <!-- Footer Stats -->
-            <div class="mt-10 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-blue-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Foods</p>
-                            <p class="text-3xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
-                        </div>
-                        <div class="bg-blue-100 p-4 rounded-full animate-float">
-                            <i class="fas fa-hamburger text-blue-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-yellow-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Featured</p>
-                            <p class="text-3xl font-bold text-yellow-600">
-                                <?php 
-                                $featured_sql = "SELECT COUNT(*) as featured FROM food WHERE featured = 'Yes'";
-                                $featured_res = mysqli_query($conn, $featured_sql);
-                                $featured_count = mysqli_fetch_assoc($featured_res)['featured'] ?? 0;
-                                echo $featured_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-yellow-100 p-4 rounded-full animate-float">
-                            <i class="fas fa-star text-yellow-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-green-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Active</p>
-                            <p class="text-3xl font-bold text-green-600">
-                                <?php 
-                                $active_sql = "SELECT COUNT(*) as active FROM food WHERE active = 'Yes'";
-                                $active_res = mysqli_query($conn, $active_sql);
-                                $active_count = mysqli_fetch_assoc($active_res)['active'] ?? 0;
-                                echo $active_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-green-100 p-4 rounded-full animate-float">
-                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover border-l-4 border-red-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Inactive</p>
-                            <p class="text-3xl font-bold text-red-600">
-                                <?php 
-                                $inactive_sql = "SELECT COUNT(*) as inactive FROM food WHERE active = 'No'";
-                                $inactive_res = mysqli_query($conn, $inactive_sql);
-                                $inactive_count = mysqli_fetch_assoc($inactive_res)['inactive'] ?? 0;
-                                echo $inactive_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-red-100 p-4 rounded-full animate-float">
-                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
