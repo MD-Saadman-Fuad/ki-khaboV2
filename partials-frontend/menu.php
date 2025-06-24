@@ -20,7 +20,7 @@
       </div>
 
       <!-- Menu inside rounded background -->
-      <div class="relative bg-gray-200 rounded-full px-1 py-1.2">
+      <div class="relative bg-amber-200 rounded-full px-1 py-1.2">
         <!-- Moving indicator -->
         <div id="indicator" class="absolute top-1 left-2 h-8 bg-orange-500 rounded-full transition-all duration-300 ease-in-out z-0" style="width: 100spx;"></div>
 
