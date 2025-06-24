@@ -1,76 +1,77 @@
 <?php include("partials/menu.php") ?>
 <?php
-    if (isset($_POST['submit'])) {
-        $id = $_POST['id'];
-        $title = $_POST['title'];
-        $current_image = $_POST['current_image'];
-        $featured = $_POST['featured'];
-        $active = $_POST['active'];
+if (isset($_POST['submit'])) {
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $current_image = $_POST['current_image'];
+    $featured = $_POST['featured'];
+    $active = $_POST['active'];
 
-        if (isset($_FILES['image']['name'])) {
-            $image_name = $_FILES['image']['name'];
+    if (isset($_FILES['image']['name'])) {
+        $image_name = $_FILES['image']['name'];
 
-            if ($image_name != "") {
-                // FIX 1: Use pathinfo() instead of explode() with end()
-                $ext = pathinfo($image_name, PATHINFO_EXTENSION);
-                $image_name = "Food_Category_" . rand(000, 999) . '.' . $ext;
-                $source_path = $_FILES['image']['tmp_name'];
-                $destination_path = "../images/category/" . $image_name;
+        if ($image_name != "") {
+            // FIX 1: Use pathinfo() instead of explode() with end()
+            $ext = pathinfo($image_name, PATHINFO_EXTENSION);
+            $image_name = "Food_Category_" . rand(000, 999) . '.' . $ext;
+            $source_path = $_FILES['image']['tmp_name'];
+            $destination_path = "../images/category/" . $image_name;
 
-                //Finally Upload the Image
-                $upload = move_uploaded_file($source_path, $destination_path);
+            //Finally Upload the Image
+            $upload = move_uploaded_file($source_path, $destination_path);
 
-                if ($upload == false) {
-                    $_SESSION['upload'] = "<div class='red'>Failed to Upload Image. </div>";
-                    header('location:' . SITEURL . 'admin/manage-category.php');
-                    die();
-                }
+            if ($upload == false) {
+                $_SESSION['upload'] = "<div class='red'>Failed to Upload Image. </div>";
+                header('location:' . SITEURL . 'admin/manage-category.php');
+                die();
+            }
 
-                // FIX 2: Check if current image file actually exists before trying to delete
-                if ($current_image != "") {
-                    $remove_path = "../images/category/" . $current_image;
-                    if (file_exists($remove_path)) {
-                        $remove = unlink($remove_path);
-                        if ($remove == false) {
-                            $_SESSION['failed-remove'] = "<div class='red'>Failed to remove current Image.</div>";
-                            header('location:' . SITEURL . 'admin/manage-category.php');
-                            die();
-                        }
+            // FIX 2: Check if current image file actually exists before trying to delete
+            if ($current_image != "") {
+                $remove_path = "../images/category/" . $current_image;
+                if (file_exists($remove_path)) {
+                    $remove = unlink($remove_path);
+                    if ($remove == false) {
+                        $_SESSION['failed-remove'] = "<div class='red'>Failed to remove current Image.</div>";
+                        header('location:' . SITEURL . 'admin/manage-category.php');
+                        die();
                     }
-                    // If file doesn't exist, we just continue without error
                 }
-            } else {
-                $image_name = $current_image;
+                // If file doesn't exist, we just continue without error
             }
         } else {
             $image_name = $current_image;
         }
+    } else {
+        $image_name = $current_image;
+    }
 
-        // FIX 3: Use prepared statements to prevent SQL injection
-        $sql2 = "UPDATE category SET 
+    // FIX 3: Use prepared statements to prevent SQL injection
+    $sql2 = "UPDATE category SET 
                 title = ?,
                 image_name = ?,
                 featured = ?,
                 active = ? 
                 WHERE id = ?";
 
-        $stmt = mysqli_prepare($conn, $sql2);
-        mysqli_stmt_bind_param($stmt, "ssssi", $title, $image_name, $featured, $active, $id);
-        $res2 = mysqli_stmt_execute($stmt);
+    $stmt = mysqli_prepare($conn, $sql2);
+    mysqli_stmt_bind_param($stmt, "ssssi", $title, $image_name, $featured, $active, $id);
+    $res2 = mysqli_stmt_execute($stmt);
 
-        if ($res2 == true) {
-            $_SESSION['update'] = "<div class='green'>Category Updated Successfully.</div>";
-            header('location:' . SITEURL . 'admin/manage-category.php');
-            exit(); // FIX 4: Use exit() instead of just header redirect
-        } else {
-            $_SESSION['update'] = "<div class='red'>Failed to Update Category.</div>";
-            header('location:' . SITEURL . 'admin/manage-category.php');
-            exit(); // FIX 4: Use exit() instead of just header redirect
-        }
+    if ($res2 == true) {
+        $_SESSION['update'] = "<div class='green'>Category Updated Successfully.</div>";
+        header('location:' . SITEURL . 'admin/manage-category.php');
+        exit(); // FIX 4: Use exit() instead of just header redirect
+    } else {
+        $_SESSION['update'] = "<div class='red'>Failed to Update Category.</div>";
+        header('location:' . SITEURL . 'admin/manage-category.php');
+        exit(); // FIX 4: Use exit() instead of just header redirect
     }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,16 +84,20 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         @keyframes pulse-glow {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow: 0 0 5px rgba(251, 146, 60, 0.5);
             }
+
             50% {
                 box-shadow: 0 0 20px rgba(251, 146, 60, 0.8), 0 0 30px rgba(251, 146, 60, 0.6);
             }
@@ -102,15 +107,16 @@
             0% {
                 background-position: -468px 0;
             }
+
             100% {
                 background-position: 468px 0;
             }
         }
-        
+
         .animate-fade-in-up {
             animation: fadeInUp 0.6s ease-out forwards;
         }
-        
+
         .animate-pulse-glow {
             animation: pulse-glow 2s infinite;
         }
@@ -120,22 +126,22 @@
             background-size: 800px 104px;
             animation: shimmer 1.5s linear infinite;
         }
-        
+
         .card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .card-hover:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .btn-hover {
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
-        
+
         .btn-hover:hover {
             transform: translateY(-1px);
         }
@@ -147,7 +153,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
 
@@ -192,6 +198,7 @@
 
         .radio-custom {
             position: relative;
+            /* This is crucial! */
         }
 
         .radio-custom input[type="radio"] {
@@ -203,6 +210,8 @@
             background: white;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
+            /* Add this for better positioning context */
         }
 
         .radio-custom input[type="radio"]:checked {
@@ -224,6 +233,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-orange-50 via-white to-red-50 min-h-screen">
     <!-- Update Category Starts -->
     <div class="main-content py-10 px-4 min-h-screen">
@@ -243,8 +253,8 @@
                         </div>
                     </div>
                     <div class="hidden md:flex items-center space-x-3">
-                        <a href="<?php echo SITEURL; ?>admin/manage-category.php" 
-                           class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 btn-hover">
+                        <a href="<?php echo SITEURL; ?>admin/manage-category.php"
+                            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 btn-hover">
                             <i class="fas fa-arrow-left mr-2"></i>
                             Back to Categories
                         </a>
@@ -263,7 +273,7 @@
                 mysqli_stmt_execute($stmt);
                 $res = mysqli_stmt_get_result($stmt);
                 $count = mysqli_num_rows($res);
-                
+
                 if ($count == 1) {
                     $row = mysqli_fetch_assoc($res);
                     $title = $row['title'];
@@ -286,7 +296,7 @@
                 <div class="bg-gradient-to-r from-orange-600 to-red-600 p-6">
                     <div class="flex items-center space-x-3">
                         <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <i class="fas fa-form text-white text-xl"></i>
+                            <i class="fas fa-table text-white text-xl"></i>
                         </div>
                         <h2 class="text-2xl font-bold text-white">Category Information</h2>
                     </div>
@@ -302,12 +312,12 @@
                                 </div>
                                 Category Title
                             </label>
-                            <input type="text" 
-                                   name="title" 
-                                   value="<?php echo htmlspecialchars($title); ?>"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 input-focus transition-all duration-200"
-                                   placeholder="Enter category title"
-                                   required>
+                            <input type="text"
+                                name="title"
+                                value="<?php echo htmlspecialchars($title); ?>"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 input-focus transition-all duration-200"
+                                placeholder="Enter category title"
+                                required>
                         </div>
 
                         <!-- Current Image -->
@@ -322,9 +332,9 @@
                                 <?php if ($current_image != ""): ?>
                                     <div class="flex items-center justify-center">
                                         <div class="image-preview rounded-xl overflow-hidden shadow-lg border-4 border-white">
-                                            <img src="<?php echo SITEURL; ?>images/category/<?php echo htmlspecialchars($current_image); ?>" 
-                                                 alt="Current category image"
-                                                 class="w-48 h-32 object-cover">
+                                            <img src="<?php echo SITEURL; ?>images/category/<?php echo htmlspecialchars($current_image); ?>"
+                                                alt="Current category image"
+                                                class="w-48 h-32 object-cover">
                                         </div>
                                     </div>
                                     <p class="text-center text-sm text-gray-500 mt-3">Current: <?php echo htmlspecialchars($current_image); ?></p>
@@ -360,7 +370,7 @@
                                     </label>
                                 </div>
                             </div>
-                            
+
                             <!-- New Image Preview -->
                             <div id="newImagePreview" class="hidden border-2 border-dashed border-green-200 rounded-xl p-6 bg-green-50">
                                 <div class="text-center">
@@ -374,9 +384,9 @@
                                         </div>
                                     </div>
                                     <p id="fileName" class="text-center text-sm text-green-600 mt-3 font-medium"></p>
-                                    <button type="button" 
-                                            onclick="clearImagePreview()" 
-                                            class="mt-3 inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200">
+                                    <button type="button"
+                                        onclick="clearImagePreview()"
+                                        class="mt-3 inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200">
                                         <i class="fas fa-times mr-2"></i>
                                         Remove New Image
                                     </button>
@@ -394,19 +404,19 @@
                             </label>
                             <div class="flex space-x-6">
                                 <label class="radio-custom flex items-center cursor-pointer">
-                                    <input type="radio" 
-                                           name="featured" 
-                                           value="Yes"
-                                           <?php if ($featured == 'Yes') echo "checked"; ?>
-                                           class="mr-3">
+                                    <input type="radio"
+                                        name="featured"
+                                        value="Yes"
+                                        <?php if ($featured == 'Yes') echo "checked"; ?>
+                                        class="mr-3">
                                     <span class="text-gray-700 font-medium">Yes</span>
                                 </label>
                                 <label class="radio-custom flex items-center cursor-pointer">
-                                    <input type="radio" 
-                                           name="featured" 
-                                           value="No"
-                                           <?php if ($featured == 'No') echo "checked"; ?>
-                                           class="mr-3">
+                                    <input type="radio"
+                                        name="featured"
+                                        value="No"
+                                        <?php if ($featured == 'No') echo "checked"; ?>
+                                        class="mr-3">
                                     <span class="text-gray-700 font-medium">No</span>
                                 </label>
                             </div>
@@ -423,19 +433,19 @@
                             </label>
                             <div class="flex space-x-6">
                                 <label class="radio-custom flex items-center cursor-pointer">
-                                    <input type="radio" 
-                                           name="active" 
-                                           value="Yes"
-                                           <?php if ($active == 'Yes') echo "checked"; ?>
-                                           class="mr-3">
+                                    <input type="radio"
+                                        name="active"
+                                        value="Yes"
+                                        <?php if ($active == 'Yes') echo "checked"; ?>
+                                        class="mr-3">
                                     <span class="text-gray-700 font-medium">Active</span>
                                 </label>
                                 <label class="radio-custom flex items-center cursor-pointer">
-                                    <input type="radio" 
-                                           name="active" 
-                                           value="No"
-                                           <?php if ($active == 'No') echo "checked"; ?>
-                                           class="mr-3">
+                                    <input type="radio"
+                                        name="active"
+                                        value="No"
+                                        <?php if ($active == 'No') echo "checked"; ?>
+                                        class="mr-3">
                                     <span class="text-gray-700 font-medium">Inactive</span>
                                 </label>
                             </div>
@@ -446,17 +456,17 @@
                         <div class="border-t border-gray-200 pt-8">
                             <div class="flex items-center justify-between">
                                 <a href="<?php echo SITEURL; ?>admin/manage-category.php"
-                                   class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 btn-hover">
+                                    class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 btn-hover">
                                     <i class="fas fa-times mr-2"></i>
                                     Cancel
                                 </a>
-                                
+
                                 <div class="flex space-x-4">
                                     <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($current_image); ?>">
                                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
-                                    <button type="submit" 
-                                            name="submit"
-                                            class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl btn-hover">
+                                    <button type="submit"
+                                        name="submit"
+                                        class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl btn-hover">
                                         <i class="fas fa-save mr-2"></i>
                                         Update Category
                                     </button>
@@ -477,13 +487,13 @@
             const previewDiv = document.getElementById('newImagePreview');
             const previewImg = document.getElementById('previewImg');
             const fileName = document.getElementById('fileName');
-            
+
             // Clear the file input
             fileInput.value = '';
-            
+
             // Hide preview
             previewDiv.classList.add('hidden');
-            
+
             // Clear preview image
             previewImg.src = '';
             fileName.textContent = '';
@@ -496,7 +506,7 @@
             const previewDiv = document.getElementById('newImagePreview');
             const previewImg = document.getElementById('previewImg');
             const fileName = document.getElementById('fileName');
-            
+
             if (fileInput) {
                 fileInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
@@ -509,7 +519,7 @@
                                 previewImg.src = e.target.result;
                                 fileName.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
                                 previewDiv.classList.remove('hidden');
-                                
+
                                 // Add animation
                                 previewDiv.style.opacity = '0';
                                 previewDiv.style.transform = 'translateY(20px)';
@@ -540,7 +550,7 @@
                     ripple.style.animation = 'ping 0.6s ease-out';
                     this.style.position = 'relative';
                     this.appendChild(ripple);
-                    
+
                     setTimeout(() => {
                         ripple.remove();
                     }, 600);
@@ -572,6 +582,7 @@
         });
     </script>
 </body>
+
 </html>
 
 <?php include("partials/footer.php") ?>
