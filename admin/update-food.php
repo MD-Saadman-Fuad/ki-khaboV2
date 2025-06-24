@@ -200,6 +200,7 @@
 
         .radio-custom {
             position: relative;
+            /* This is crucial! */
         }
 
         .radio-custom input[type="radio"] {
@@ -211,6 +212,8 @@
             background: white;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
+            /* Add this for better positioning context */
         }
 
         .radio-custom input[type="radio"]:checked {

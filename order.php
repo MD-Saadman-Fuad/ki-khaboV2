@@ -19,6 +19,36 @@
   }
 ?>
 
+<?php
+  if (isset($_POST['submit'])) {
+    $food = mysqli_real_escape_string($conn, $_POST['food']);
+    $price = (float)$_POST['price'];
+    $qty = (int)$_POST['qty'];
+    $total = $price * $qty;
+    $order_date = date("Y-m-d H:i:s");
+    $status = 'Ordered';
+    $customer_name = mysqli_real_escape_string($conn, $_POST['full-name']);
+    $customer_contact = mysqli_real_escape_string($conn, $_POST['contact']);
+    $customer_email = mysqli_real_escape_string($conn, $_POST['email']);
+    $customer_address = mysqli_real_escape_string($conn, $_POST['address']);
+
+    $sql2 = "
+      INSERT INTO order_table SET
+        food='$food', price=$price, quantity=$qty, total=$total, order_date='$order_date',
+        status='$status', customer_name='$customer_name',
+        customer_contact='$customer_contact', customer_email='$customer_email',
+        customer_address='$customer_address'
+    ";
+    if (mysqli_query($conn, $sql2)) {
+      $_SESSION['order'] = "<div class='text-center text-green-600 font-semibold'>Food Ordered Successfully.</div>";
+      header("Location: " . SITEURL);
+    } else {
+      $_SESSION['order'] = "<div class='text-center text-red-600 font-semibold'>Order Failed. Please try again!</div>";
+      header("Location: " . SITEURL);
+    }
+  }
+?>
+
 <style>
   /* Custom animations and transitions */
   .fade-in {
@@ -156,34 +186,6 @@
   </div>
 </section>
 
-<?php
-  if (isset($_POST['submit'])) {
-    $food = mysqli_real_escape_string($conn, $_POST['food']);
-    $price = (float)$_POST['price'];
-    $qty = (int)$_POST['qty'];
-    $total = $price * $qty;
-    $order_date = date("Y-m-d H:i:s");
-    $status = 'Ordered';
-    $customer_name = mysqli_real_escape_string($conn, $_POST['full-name']);
-    $customer_contact = mysqli_real_escape_string($conn, $_POST['contact']);
-    $customer_email = mysqli_real_escape_string($conn, $_POST['email']);
-    $customer_address = mysqli_real_escape_string($conn, $_POST['address']);
 
-    $sql2 = "
-      INSERT INTO order_table SET
-        food='$food', price=$price, quantity=$qty, total=$total, order_date='$order_date',
-        status='$status', customer_name='$customer_name',
-        customer_contact='$customer_contact', customer_email='$customer_email',
-        customer_address='$customer_address'
-    ";
-    if (mysqli_query($conn, $sql2)) {
-      $_SESSION['order'] = "<div class='text-center text-green-600 font-semibold'>Food Ordered Successfully.</div>";
-      header("Location: " . SITEURL);
-    } else {
-      $_SESSION['order'] = "<div class='text-center text-red-600 font-semibold'>Order Failed. Please try again!</div>";
-      header("Location: " . SITEURL);
-    }
-  }
-?>
 
 <?php include('partials-frontend/footer.php');?>
