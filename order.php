@@ -18,48 +18,138 @@
     header("Location: " . SITEURL);
   }
 ?>
+
+<style>
+  /* Custom animations and transitions */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-zoom {
+    transition: transform 0.4s ease;
+  }
+  
+  .image-zoom:hover {
+    transform: scale(1.05);
+  }
+  
+  .input-focus {
+    transition: all 0.3s ease;
+  }
+  
+  .input-focus:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.15);
+  }
+  
+  .button-press {
+    transition: all 0.2s ease;
+  }
+  
+  .button-press:active {
+    transform: translateY(1px);
+  }
+  
+  .section-slide {
+    animation: slideUp 0.8s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
 <section class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-  <div class="bg-white shadow-lg rounded-lg max-w-md w-full">
+  <div class="bg-white shadow-lg rounded-lg max-w-md w-full hover-lift fade-in">
     <div class="overflow-hidden rounded-t-lg h-48 bg-gray-200">
       <?php if ($image_name): ?>
-        <img src="<?= SITEURL ?>images/food/<?= $image_name ?>" alt="<?= htmlspecialchars($title) ?>" class="object-cover w-full h-full">
+        <img src="<?= SITEURL ?>images/food/<?= $image_name ?>" alt="<?= htmlspecialchars($title) ?>" 
+             class="object-cover w-full h-full image-zoom">
       <?php else: ?>
-        <div class="flex items-center justify-center h-full text-gray-500">No image available</div>
+        <div class="flex items-center justify-center h-full text-gray-500 transition-colors duration-300 hover:text-gray-700">
+          No image available
+        </div>
       <?php endif; ?>
     </div>
-    <div class="p-6">
-      <h2 class="text-2xl font-semibold mb-2"><?= htmlspecialchars($title) ?></h2>
-      <p class="text-lg text-green-600 font-semibold mb-4">৳ <?= number_format($price, 2) ?></p>
-      <p class="text-gray-700 mb-6"><?= htmlspecialchars($description) ?></p>
+    
+    <div class="p-6 section-slide">
+      <h2 class="text-2xl font-semibold mb-2 transition-colors duration-300 hover:text-green-600">
+        <?= htmlspecialchars($title) ?>
+      </h2>
+      <p class="text-lg text-green-600 font-semibold mb-4 transition-all duration-300 hover:text-green-700 hover:scale-105">
+        ৳ <?= number_format($price, 2) ?>
+      </p>
+      <p class="text-gray-700 mb-6 transition-colors duration-300 hover:text-gray-800">
+        <?= htmlspecialchars($description) ?>
+      </p>
 
       <form action="" method="post" class="space-y-5">
-        <div>
-          <label for="qty" class="block text-gray-600 font-medium mb-1">Quantity</label>
+        <div class="transition-all duration-300 hover:bg-gray-50 hover:rounded-lg hover:p-3 hover:-m-3">
+          <label for="qty" class="block text-gray-600 font-medium mb-1 transition-colors duration-300">
+            Quantity
+          </label>
           <input id="qty" name="qty" type="number" min="1" value="1"
-                 class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                 class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus" required>
           <input type="hidden" name="food" value="<?= htmlspecialchars($title) ?>">
           <input type="hidden" name="price" value="<?= htmlspecialchars($price) ?>">
         </div>
 
-        <hr class="my-4">
+        <hr class="my-4 transition-all duration-500 hover:border-green-300">
 
-        <div>
-          <h3 class="text-xl font-semibold mb-2">Delivery Details</h3>
+        <div class="transition-all duration-300 hover:bg-gray-50 hover:rounded-lg hover:p-4 hover:-m-4">
+          <h3 class="text-xl font-semibold mb-2 transition-colors duration-300 hover:text-green-600">
+            Delivery Details
+          </h3>
           <div class="space-y-4">
             <input name="full-name" type="text" placeholder="Full Name"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
+                          transition-all duration-300 hover:border-green-300" required>
             <input name="contact" type="tel" placeholder="Phone Number"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
+                          transition-all duration-300 hover:border-green-300" required>
             <input name="email" type="email" placeholder="Email"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" required>
+                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
+                          transition-all duration-300 hover:border-green-300" required>
             <textarea name="address" rows="3" placeholder="Delivery Address"
-                      class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500" required></textarea>
+                      class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
+                             transition-all duration-300 hover:border-green-300 resize-none" required></textarea>
           </div>
         </div>
 
         <button type="submit" name="submit"
-                class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-          Confirm Order
+                class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold 
+                       hover:bg-green-700 transition-all duration-300 button-press
+                       hover:shadow-lg hover:shadow-green-500/25 
+                       transform hover:scale-[1.02] active:scale-[0.98]
+                       focus:ring-4 focus:ring-green-500/50 focus:outline-none">
+          <span class="transition-all duration-200">Confirm Order</span>
         </button>
       </form>
     </div>

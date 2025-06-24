@@ -1,4 +1,62 @@
-<?php include('partials/menu.php'); ?>
+<?php
+ob_start(); 
+include('partials/menu.php');                // Start output buffering — must be first line
+            // Start session before any HTML
+
+// Process form submission FIRST, before any HTML output
+if (isset($_POST['submit'])) {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $price = $_POST['price'];
+    $category = $_POST['category'];
+    $featured = isset($_POST['featured']) ? $_POST['featured'] : "No";
+    $active = isset($_POST['active']) ? $_POST['active'] : "No";
+    $image_name = "";
+
+    if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "") {
+        $image_name = $_FILES['image']['name'];
+        $ext = pathinfo($image_name, PATHINFO_EXTENSION);
+        $image_name = "Food_Category_" . rand(100, 999) . '.' . $ext;
+
+        $source_path = $_FILES['image']['tmp_name'];
+        $destination_path = "../images/food/" . $image_name;
+
+        $upload = move_uploaded_file($source_path, $destination_path);
+        if (!$upload) {
+            $_SESSION['upload'] = "<div class='text-red-600 font-medium'>Failed to Upload Image.</div>";
+            ob_end_clean(); // Clear buffer before redirect
+            header('location:' . SITEURL . 'admin/add-category.php');
+            exit;
+        }
+    }
+
+    $sql2 = "INSERT INTO food SET 
+             title = '$title',
+             description = '$description',
+             price = $price,
+             image_name = '$image_name',
+             category_id = $category,
+             featured = '$featured',
+             active = '$active'";
+
+    $res2 = mysqli_query($conn, $sql2);
+
+    if ($res2 == true) {
+        $_SESSION['add'] = "<div class='text-green-600 font-medium'>Food Added Successfully.</div>";
+        ob_end_clean(); // Clear buffer before redirect
+        header('location:' . SITEURL . 'admin/manage-food.php');
+        exit;
+    } else {
+        $_SESSION['add'] = "<div class='text-red-600 font-medium'>Failed to Add Food.</div>";
+        ob_end_clean(); // Clear buffer before redirect
+        header('location:' . SITEURL . 'admin/manage-food.php');
+        exit;
+    }
+}
+
+// NOW include the menu and start HTML output
+
+?>
 
 <!-- Add Food Starts -->
 <div class="main-content py-10 px-4 bg-orange-50 min-h-screen">
@@ -86,55 +144,9 @@
     </form>
     <!-- Form Ends -->
 
-    <?php 
-    if (isset($_POST['submit'])) {
-        $title = $_POST['title'];
-        $description = $_POST['description'];
-        $price = $_POST['price'];
-        $category = $_POST['category'];
-        $featured = isset($_POST['featured']) ? $_POST['featured'] : "No";
-        $active = isset($_POST['active']) ? $_POST['active'] : "No";
-        $image_name = "";
-
-        if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "") {
-            $image_name = $_FILES['image']['name'];
-            $ext = pathinfo($image_name, PATHINFO_EXTENSION);
-            $image_name = "Food_Category_" . rand(100, 999) . '.' . $ext;
-
-            $source_path = $_FILES['image']['tmp_name'];
-            $destination_path = "../images/food/" . $image_name;
-
-            $upload = move_uploaded_file($source_path, $destination_path);
-            if (!$upload) {
-                $_SESSION['upload'] = "<div class='text-red-600 font-medium'>Failed to Upload Image.</div>";
-                header('location:' . SITEURL . 'admin/add-category.php');
-                die();
-            }
-        }
-
-        $sql2 = "INSERT INTO food SET 
-                 title = '$title',
-                 description = '$description',
-                 price = $price,
-                 image_name = '$image_name',
-                 category_id = $category,
-                 featured = '$featured',
-                 active = '$active'";
-
-        $res2 = mysqli_query($conn, $sql2);
-
-        if ($res2 == true) {
-            $_SESSION['add'] = "<div class='text-green-600 font-medium'>Food Added Successfully.</div>";
-            header('location:' . SITEURL . 'admin/manage-food.php');
-        } else {
-            $_SESSION['add'] = "<div class='text-red-600 font-medium'>Failed to Add Food.</div>";
-            header('location:' . SITEURL . 'admin/manage-food.php');
-        }
-    }
-    ?>
   </div>
 </div>
 <!-- Add Food Ends -->
 
-
 <?php include('partials/footer.php'); ?>
+<?php ob_end_flush(); ?>

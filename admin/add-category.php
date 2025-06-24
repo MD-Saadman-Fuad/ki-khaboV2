@@ -1,5 +1,57 @@
-<?php include("partials/menu.php") ?>
+<?php
+include("partials/menu.php");
+ob_start();
 
+
+// Process form submission FIRST, before any HTML output
+if (isset($_POST['submit'])) {
+    $title = $_POST['title'];
+    $featured = isset($_POST['featured']) ? $_POST['featured'] : "No";
+    $active = isset($_POST['active']) ? $_POST['active'] : "No";
+    $image_name = "";
+
+    if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "") {
+        $original_name = $_FILES['image']['name'];
+        $ext = pathinfo($original_name, PATHINFO_EXTENSION);
+        $image_name = "Food_Category_" . rand(100, 999) . "." . $ext;
+
+        $source_path = $_FILES['image']['tmp_name'];
+        $destination_path = "../images/category/" . $image_name;
+
+        $upload = move_uploaded_file($source_path, $destination_path);
+
+        if (!$upload) {
+            $_SESSION['upload'] = "<div class='text-red-600 font-medium'>Failed to Upload Image.</div>";
+            ob_end_clean(); // Clear buffer before redirect
+            header('location:' . SITEURL . 'admin/add-category.php');
+            exit();
+        }
+    }
+
+    $sql = "INSERT INTO category SET 
+            title='$title',
+            image_name='$image_name',
+            featured='$featured',
+            active='$active'";
+
+    $res = mysqli_query($conn, $sql);
+
+    if ($res == true) {
+        $_SESSION['add'] = "<div class='text-green-600 font-medium'>Category Added Successfully.</div>";
+        ob_end_clean(); // Clear buffer before redirect
+        header('location:' . SITEURL . 'admin/manage-category.php');
+        exit();
+    } else {
+        $_SESSION['add'] = "<div class='text-red-600 font-medium'>Failed to Add Category.</div>";
+        ob_end_clean(); // Clear buffer before redirect
+        header('location:' . SITEURL . 'admin/add-category.php');
+        exit();
+    }
+}
+
+// NOW include the menu and start HTML output
+
+?>
 
 <!-- Add Category Starts -->
 <div class="main-content py-10 px-4 bg-orange-50 min-h-screen">
@@ -66,49 +118,9 @@
     </form>
     <!-- Form Ends -->
 
-    <?php 
-    if (isset($_POST['submit'])) {
-      $title = $_POST['title'];
-      $featured = isset($_POST['featured']) ? $_POST['featured'] : "No";
-      $active = isset($_POST['active']) ? $_POST['active'] : "No";
-      $image_name = "";
-
-      if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "") {
-        $original_name = $_FILES['image']['name'];
-        $ext = pathinfo($original_name, PATHINFO_EXTENSION);
-        $image_name = "Food_Category_" . rand(100, 999) . "." . $ext;
-
-        $source_path = $_FILES['image']['tmp_name'];
-        $destination_path = "../images/category/" . $image_name;
-
-        $upload = move_uploaded_file($source_path, $destination_path);
-
-        if (!$upload) {
-          $_SESSION['upload'] = "<div class='text-red-600 font-medium'>Failed to Upload Image.</div>";
-          header('location:' . SITEURL . 'admin/add-category.php');
-          die();
-        }
-      }
-
-      $sql = "INSERT INTO category SET 
-              title='$title',
-              image_name='$image_name',
-              featured='$featured',
-              active='$active'";
-
-      $res = mysqli_query($conn, $sql);
-
-      if ($res == true) {
-        $_SESSION['add'] = "<div class='text-green-600 font-medium'>Category Added Successfully.</div>";
-        header('location:' . SITEURL . 'admin/manage-category.php');
-      } else {
-        $_SESSION['add'] = "<div class='text-red-600 font-medium'>Failed to Add Category.</div>";
-        header('location:' . SITEURL . 'admin/add-category.php');
-      }
-    }
-    ?>
   </div>
 </div>
 <!-- Add Category Ends -->
 
 <?php include("partials/footer.php"); ?>
+<?php ob_end_flush(); ?>

@@ -1,9 +1,9 @@
 <?php include('partials-frontend/menu.php');?>
 
  <!-- Food Search Section Starts Here -->
-<section class="bg-orange-100 py-10">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50  py-12">
   <div class="container mx-auto px-4 text-center">
-    <form action="<?php echo SITEURL; ?>food-search.php" method="POST" class="flex flex-col sm:flex-row justify-center items-center gap-4">
+    <form action="<?php echo SITEURL; ?>food-search.php" method="POST" class="flex flex-col sm:flex-row justify-center items-center gap-4 opacity-0 animate-fade-in">
       <input 
         type="search" 
         name="search" 
@@ -23,9 +23,9 @@
 <!-- Food Search Section Ends Here -->
 
 <!-- Food Menu Section Starts Here -->
-<section class="bg-white py-12">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 py-12">
   <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Food Menu</h2>
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 opacity-0 animate-fade-in" style="animation-delay: 300ms;">Food Menu</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <?php 
@@ -34,6 +34,7 @@
         $count = mysqli_num_rows($res);
 
         if ($count > 0) {
+          $index = 0;
           while ($row = mysqli_fetch_assoc($res)) {
             $id = $row['id'];
             $title = $row['title'];
@@ -41,8 +42,10 @@
             $description = $row['description'];
             $image_name = $row['image_name'];
             $image_path = SITEURL . "images/food/" . $image_name;
+            $delay = 500 + ($index * 150); // Start after heading + 150ms delay between each item
       ?>
-      <div class="flex gap-4 bg-gray-50 p-4 rounded-lg shadow hover:shadow-md transition">
+      <div class="flex gap-4 bg-gray-50 p-4 rounded-lg shadow hover:shadow-md transition opacity-0 translate-y-[50px] animate-slide-in-up" 
+           style="animation-delay: <?php echo $delay; ?>ms;">
         <div class="w-32 h-32 flex-shrink-0">
           <?php if ($image_name == ""): ?>
             <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
@@ -68,14 +71,47 @@
         </div>
       </div>
       <?php
+            $index++;
           }
         } else {
-          echo "<div class='text-center text-red-600 font-semibold col-span-2'>Food Not Available</div>";
+          echo "<div class='text-center text-red-600 font-semibold col-span-2 opacity-0 animate-fade-in' style='animation-delay: 500ms;'>Food Not Available</div>";
         }
       ?>
     </div>
   </div>
 </section>
 <!-- Food Menu Section Ends Here -->
+
+<style>
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-up {
+  animation: slide-in-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+</style>
 
     <?php include('partials-frontend/footer.php');?>

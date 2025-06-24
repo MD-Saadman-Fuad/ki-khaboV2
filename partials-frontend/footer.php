@@ -1,5 +1,5 @@
 <!-- Social Section Starts Here -->
-<section class="bg-gray-100 py-6">
+<section class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50">
   <div class="container mx-auto px-4 text-center">
     <ul class="flex flex-wrap justify-center gap-6">
       <li>

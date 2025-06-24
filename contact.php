@@ -37,7 +37,7 @@
         }
     </style>
 
-    <div class="contact-container">
+    <div class="contact-container main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50">
         <h2>Contact Me</h2>
         <p>Feel free to reach out through my socials or email.</p>
         <?php include('partials-frontend/footer.php') ?>

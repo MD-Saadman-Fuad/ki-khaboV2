@@ -133,6 +133,78 @@
             }
             ?>
 
+            <!-- order Stats -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 py-10">
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-blue-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Orders</p>
+                            <p class="text-2xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-shopping-cart text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-orange-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Pending</p>
+                            <p class="text-2xl font-bold text-orange-600">
+                                <?php 
+                                $pending_sql = "SELECT COUNT(*) as pending FROM order_table WHERE status != 'Delivered'";
+                                $pending_res = mysqli_query($conn, $pending_sql);
+                                $pending_count = mysqli_fetch_assoc($pending_res)['pending'] ?? 0;
+                                echo $pending_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <i class="fas fa-clock text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-green-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Delivered</p>
+                            <p class="text-2xl font-bold text-green-600">
+                                <?php 
+                                $delivered_sql = "SELECT COUNT(*) as delivered FROM order_table WHERE status = 'Delivered'";
+                                $delivered_res = mysqli_query($conn, $delivered_sql);
+                                $delivered_count = mysqli_fetch_assoc($delivered_res)['delivered'] ?? 0;
+                                echo $delivered_count;
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-red-500 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500">Revenue</p>
+                            <p class="text-2xl font-bold text-red-600">
+                                $<?php 
+                                $revenue_sql = "SELECT SUM(total) as revenue FROM order_table WHERE status = 'Delivered'";
+                                $revenue_res = mysqli_query($conn, $revenue_sql);
+                                $revenue = mysqli_fetch_assoc($revenue_res)['revenue'] ?? 0;
+                                echo number_format($revenue, 2);
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <i class="fas fa-dollar-sign text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Orders Table -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gradient-to-r from-orange-600 to-red-600 p-6">
@@ -230,7 +302,7 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-sm font-semibold text-green-600">$<?php echo $price; ?></span>
+                                            <span class="text-sm font-semibold text-green-600">৳<?php echo $price; ?></span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="bg-blue-100 px-3 py-1 rounded-full text-center">
@@ -238,7 +310,7 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="text-lg font-bold text-purple-600">$<?php echo $total; ?></span>
+                                            <span class="text-lg font-bold text-purple-600"><?php echo $total; ?></span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                             <div class="flex items-center">
@@ -330,77 +402,7 @@
                 </div>
             </div>
 
-            <!-- Footer Stats -->
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-blue-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Total Orders</p>
-                            <p class="text-2xl font-bold text-blue-600"><?php echo $count ?? 0; ?></p>
-                        </div>
-                        <div class="bg-blue-100 p-3 rounded-full">
-                            <i class="fas fa-shopping-cart text-blue-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-orange-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Pending</p>
-                            <p class="text-2xl font-bold text-orange-600">
-                                <?php 
-                                $pending_sql = "SELECT COUNT(*) as pending FROM order_table WHERE status != 'Delivered'";
-                                $pending_res = mysqli_query($conn, $pending_sql);
-                                $pending_count = mysqli_fetch_assoc($pending_res)['pending'] ?? 0;
-                                echo $pending_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-orange-100 p-3 rounded-full">
-                            <i class="fas fa-clock text-orange-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-green-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Delivered</p>
-                            <p class="text-2xl font-bold text-green-600">
-                                <?php 
-                                $delivered_sql = "SELECT COUNT(*) as delivered FROM order_table WHERE status = 'Delivered'";
-                                $delivered_res = mysqli_query($conn, $delivered_sql);
-                                $delivered_count = mysqli_fetch_assoc($delivered_res)['delivered'] ?? 0;
-                                echo $delivered_count;
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-green-100 p-3 rounded-full">
-                            <i class="fas fa-check-circle text-green-600"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-red-500 animate-fade-in-up">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-500">Revenue</p>
-                            <p class="text-2xl font-bold text-red-600">
-                                $<?php 
-                                $revenue_sql = "SELECT SUM(total) as revenue FROM order_table WHERE status = 'Delivered'";
-                                $revenue_res = mysqli_query($conn, $revenue_sql);
-                                $revenue = mysqli_fetch_assoc($revenue_res)['revenue'] ?? 0;
-                                echo number_format($revenue, 2);
-                                ?>
-                            </p>
-                        </div>
-                        <div class="bg-red-100 p-3 rounded-full">
-                            <i class="fas fa-dollar-sign text-red-600"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 
