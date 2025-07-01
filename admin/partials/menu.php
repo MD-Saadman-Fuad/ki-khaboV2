@@ -14,8 +14,9 @@ include("login-check.php") ;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Navigation Bar</title>
+    <title>Ki Khabo</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="../images/logo.png">
 </head>
 <body class="main main-content bg-gradient-to-br from-orange-200 via-amber-50 to-yellow-50 min-h-screen py- lg:py- relative">
   <div class="flex justify-center items-center py-2">
