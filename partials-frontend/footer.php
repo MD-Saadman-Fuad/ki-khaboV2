@@ -40,5 +40,63 @@
     <p class="text-sm font-medium">&copy; <?php echo date('Y'); ?> <span class="text-orange-400 font-semibold">Ki Khabo</span>. Crafted with care by Saadman Fuad.</p>
   </div>
 </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Mobile Menu Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+
+  // 2. Smooth Top Progress Bar for Internal Navigation
+  const progress = document.getElementById('pageProgress');
+  document.querySelectorAll('a[href]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = link.getAttribute('href');
+      if (target && !target.startsWith('#') && !target.startsWith('javascript:') && !link.hasAttribute('target')) {
+        if (progress) {
+          progress.style.opacity = '1';
+          progress.style.width = '75%';
+        }
+      }
+    });
+  });
+
+  // 3. Scroll Reveal Observer for Cards
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -30px 0px'
+  };
+
+  const scrollObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal-on-scroll, .animate-slide-up').forEach(el => {
+    scrollObserver.observe(el);
+  });
+
+  // 4. Smooth Image Fade-in Loader
+  document.querySelectorAll('img').forEach(img => {
+    img.classList.add('img-smooth');
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => {
+        img.classList.add('loaded');
+      });
+    }
+  });
+});
+</script>
 </body>
 </html>

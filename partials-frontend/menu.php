@@ -24,9 +24,54 @@
         }
       }
     </script>
+    <style>
+      /* Smooth Page Load Fade-in */
+      body {
+        animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes pageFadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Shimmer Effect for Loading Images */
+      .shimmer {
+        background: linear-gradient(90deg, #f5f5f4 0%, #e7e5e4 50%, #f5f5f4 100%);
+        background-size: 200% 100%;
+        animation: shimmerWave 1.8s infinite ease-in-out;
+      }
+      @keyframes shimmerWave {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      /* Image Fade In once Loaded */
+      .img-smooth {
+        opacity: 0;
+        transition: opacity 0.5s ease-out, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .img-smooth.loaded {
+        opacity: 1;
+      }
+
+      /* Smooth Scroll Reveal */
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+      .reveal-on-scroll.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
     <link rel="icon" type="image/x-icon" href="images/logo.png">
 </head>
 <body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-orange-500 selection:text-white">
+
+  <!-- Top Progress Bar for Smooth Page Transitions -->
+  <div id="pageProgress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 z-[100] transition-all duration-500 ease-out w-0 pointer-events-none opacity-0"></div>
   
   <!-- Sticky Header Bar -->
   <header class="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-stone-200/70 shadow-xs">
@@ -37,7 +82,7 @@
         <img src="images/logo.png" alt="Ki Khabo Logo" class="h-12 w-auto object-contain">
       </a>
 
-      <!-- Navigation Capsule (Center) -->
+      <!-- Navigation Capsule (Center - Desktop) -->
       <div class="relative bg-stone-100/90 p-1 rounded-full border border-stone-200/70 shadow-inner hidden md:block">
         <!-- Moving background indicator -->
         <div id="indicator" class="absolute top-1 left-1 h-9 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-300 ease-out shadow-md shadow-orange-500/25 z-0" style="width: 72px;"></div>
@@ -52,7 +97,7 @@
         </div>
       </div>
 
-      <!-- Right Header Actions (Cart Widget) -->
+      <!-- Right Header Actions (Cart Widget & Mobile Menu Toggle) -->
       <?php 
         $cart_count = 0;
         if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
@@ -64,14 +109,14 @@
       <div class="flex items-center gap-3">
         <!-- Standalone Shopping Cart Button with Notification Badge -->
         <a href="<?php echo SITEURL; ?>cart.php" 
-           class="relative flex items-center justify-center w-11 h-11 bg-white hover:bg-orange-50 border border-stone-200/80 rounded-full shadow-sm hover:shadow-md transition-all duration-300 group"
+           class="relative flex items-center justify-center w-11 h-11 bg-white hover:bg-orange-50 border border-stone-200/80 rounded-full shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
            title="View Shopping Cart">
           <svg class="w-5 h-5 text-stone-700 group-hover:text-orange-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"></path>
           </svg>
           
           <?php if ($cart_count > 0): ?>
-            <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-orange-600 to-amber-600 text-[11px] font-extrabold text-white shadow-md ring-2 ring-white animate-bounce">
+            <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-orange-600 to-amber-600 text-[11px] font-extrabold text-white shadow-md ring-2 ring-white animate-pulse">
               <?php echo $cart_count; ?>
             </span>
           <?php else: ?>
@@ -80,8 +125,25 @@
             </span>
           <?php endif; ?>
         </a>
+
+        <!-- Mobile Nav Toggle Button -->
+        <button id="mobileMenuBtn" aria-label="Toggle Navigation Menu" 
+                class="md:hidden flex items-center justify-center w-11 h-11 bg-stone-100 hover:bg-stone-200 border border-stone-200/80 rounded-full text-stone-700 transition active:scale-95">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
 
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-stone-200/60 bg-white/95 backdrop-blur-md px-4 py-4 space-y-2 transition-all duration-300 shadow-lg">
+      <a href="<?php echo SITEURL; ?>" class="block px-4 py-2.5 rounded-xl font-bold text-stone-800 hover:bg-orange-50 hover:text-orange-600 transition">Home</a>
+      <a href="<?php echo SITEURL; ?>categories.php" class="block px-4 py-2.5 rounded-xl font-bold text-stone-800 hover:bg-orange-50 hover:text-orange-600 transition">Categories</a>
+      <a href="<?php echo SITEURL; ?>foods.php" class="block px-4 py-2.5 rounded-xl font-bold text-stone-800 hover:bg-orange-50 hover:text-orange-600 transition">Foods</a>
+      <a href="<?php echo SITEURL; ?>contact.php" class="block px-4 py-2.5 rounded-xl font-bold text-stone-800 hover:bg-orange-50 hover:text-orange-600 transition">Contact</a>
+      <a href="<?php echo SITEURL; ?>admin/login.php" class="block px-4 py-2.5 rounded-xl font-bold text-stone-800 hover:bg-orange-50 hover:text-orange-600 transition">Admin</a>
     </div>
   </header>
 
