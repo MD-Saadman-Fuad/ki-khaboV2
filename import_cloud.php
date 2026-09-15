@@ -1,14 +1,27 @@
 <?php
-if ($argc < 2) {
+// Load local .env file if present
+$env_file = __DIR__ . '/.env';
+if (file_exists($env_file)) {
+    $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (!empty($line) && strpos($line, '#') !== 0 && strpos($line, '=') !== false) {
+            list($key, $val) = explode('=', $line, 2);
+            putenv(trim($key) . '=' . trim($val));
+        }
+    }
+}
+
+$host = getenv('DB_HOST') ? getenv('DB_HOST') : 'ki-khabo-ki-khabo.e.aivencloud.com';
+$port = getenv('DB_PORT') ? (int)getenv('DB_PORT') : 23130;
+$user = getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'avnadmin';
+$pass = isset($argv[1]) && !empty($argv[1]) ? $argv[1] : getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME') ? getenv('DB_NAME') : 'defaultdb';
+
+if (empty($pass)) {
     echo "Usage: php import_cloud.php YOUR_AIVEN_PASSWORD\n";
     exit(1);
 }
-
-$host = 'ki-khabo-ki-khabo.e.aivencloud.com';
-$port = 23130;
-$user = 'avnadmin';
-$pass = $argv[1];
-$dbname = 'defaultdb';
 
 echo "Connecting to Aiven MySQL ($host:$port)...\n";
 $conn = mysqli_connect($host, $user, $pass, $dbname, $port);
