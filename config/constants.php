@@ -3,6 +3,23 @@
         session_start();
     }
 
+    // Load local .env file if present
+    $env_file = __DIR__ . '/../.env';
+    if (file_exists($env_file)) {
+        $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (!empty($line) && strpos($line, '#') !== 0 && strpos($line, '=') !== false) {
+                list($key, $val) = explode('=', $line, 2);
+                $key = trim($key);
+                $val = trim($val);
+                if (getenv($key) === false) {
+                    putenv("$key=$val");
+                }
+            }
+        }
+    }
+
     $site_url = getenv('SITEURL') ? getenv('SITEURL') : 'http://localhost/ki-khaboV2/';
     $db_host  = getenv('DB_HOST') ? getenv('DB_HOST') : 'localhost';
     $db_user  = getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'root';
