@@ -198,7 +198,7 @@ if (isset($_SESSION['order'])){
          class="group relative block rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-white border border-stone-200/60 opacity-0 translate-y-8 animate-slide-up" 
          style="animation-delay: <?php echo $delay; ?>ms;">
         <div class="h-60 overflow-hidden relative">
-          <?php if ($image_name == ""): ?>
+          <?php if ($image_name == "" || !file_exists("images/category/" . $image_name)): ?>
             <div class="bg-stone-100 h-full flex items-center justify-center text-stone-400 font-medium">Image Not Available</div>
           <?php else: ?>
             <img src="<?php echo $image_path; ?>" alt="<?php echo $title; ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
@@ -258,7 +258,7 @@ if (isset($_SESSION['order'])){
       <div class="bg-stone-50/80 p-4 sm:p-5 rounded-2xl shadow-xs hover:shadow-xl border border-stone-200/70 transition-all duration-300 flex flex-col sm:flex-row gap-5 items-center group opacity-0 translate-y-8 animate-slide-up" 
            style="animation-delay: <?php echo $delay; ?>ms;">
         <div class="w-full sm:w-36 h-36 flex-shrink-0 rounded-xl overflow-hidden bg-stone-200 relative">
-          <?php if ($image_name == ""): ?>
+          <?php if ($image_name == "" || !file_exists("images/food/" . $image_name)): ?>
             <div class="w-full h-full flex items-center justify-center text-stone-400 text-xs font-medium">Image Not Available</div>
           <?php else: ?>
             <img src="<?php echo $image_path; ?>" alt="<?php echo $title; ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">

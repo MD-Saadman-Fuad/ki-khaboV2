@@ -27,7 +27,7 @@
            class="group relative block rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-white border border-stone-200/60 opacity-0 translate-y-8 animate-slide-up" 
            style="animation-delay: <?php echo $delay; ?>ms;">
           <div class="h-60 overflow-hidden relative">
-            <?php if ($image_name == ""): ?>
+            <?php if ($image_name == "" || !file_exists("images/category/" . $image_name)): ?>
               <div class="bg-stone-100 h-full flex items-center justify-center text-stone-400 font-medium">Image Not Available</div>
             <?php else: ?>
               <img src="<?php echo $image_path; ?>" alt="<?php echo $title; ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">

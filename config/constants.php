@@ -20,7 +20,7 @@
         }
     }
 
-    $site_url = getenv('SITEURL') ? getenv('SITEURL') : 'http://localhost/ki-khaboV2/';
+    $site_url = getenv('SITEURL') ? rtrim(getenv('SITEURL'), '/') . '/' : 'http://localhost/ki-khaboV2/';
     $db_host  = getenv('DB_HOST') ? getenv('DB_HOST') : 'localhost';
     $db_user  = getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'root';
     $db_pass  = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';
