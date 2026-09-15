@@ -25,15 +25,19 @@
     $db_user  = getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'root';
     $db_pass  = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';
     $db_name  = getenv('DB_NAME') ? getenv('DB_NAME') : 'ki-khabo';
+    $db_port  = getenv('DB_PORT') ? (int)getenv('DB_PORT') : 3306;
 
     if (!defined('SITEURL')) define('SITEURL', $site_url);
     if (!defined('LOCALHOST')) define('LOCALHOST', $db_host);
     if (!defined('DB_USERNAME')) define('DB_USERNAME', $db_user);
     if (!defined('DB_PASSWORD')) define('DB_PASSWORD', $db_pass);
     if (!defined('DB_NAME')) define('DB_NAME', $db_name); 
+    if (!defined('DB_PORT')) define('DB_PORT', $db_port);
 
     if (!isset($conn) || !$conn) {
-        $conn = mysqli_connect(LOCALHOST, DB_USERNAME, DB_PASSWORD) or die(mysqli_error()); #connect db
-        $db_select = mysqli_select_db($conn, DB_NAME) or die(mysqli_error()); #select db
+        $conn = mysqli_connect(LOCALHOST, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT);
+        if (!$conn) {
+            die("❌ Database connection error: " . mysqli_connect_error());
+        }
     }
 ?>
