@@ -1,53 +1,57 @@
-<?php include('partials-frontend/menu.php');?>
+<?php 
+include('config/constants.php');
 
-    <?php 
-  if (isset($_GET['food_id'])) {
-    $food_id = $_GET['food_id'];
-    $sql = "SELECT * FROM food WHERE id=$food_id";
-    $res = mysqli_query($conn, $sql);
-    if (mysqli_num_rows($res) === 1) {
-      $row = mysqli_fetch_assoc($res);
-      $title = $row['title'];
-      $price = $row['price'];
-      $description = $row['description'];
-      $image_name = $row['image_name'];
-    } else {
-      header("Location: " . SITEURL);
-    }
+if (isset($_GET['food_id'])) {
+  $food_id = (int)$_GET['food_id'];
+  $sql = "SELECT * FROM food WHERE id=$food_id";
+  $res = mysqli_query($conn, $sql);
+  if (mysqli_num_rows($res) === 1) {
+    $row = mysqli_fetch_assoc($res);
+    $title = $row['title'];
+    $price = $row['price'];
+    $description = $row['description'];
+    $image_name = $row['image_name'];
   } else {
     header("Location: " . SITEURL);
+    exit();
   }
+} else {
+  header("Location: " . SITEURL);
+  exit();
+}
+
+if (isset($_POST['submit'])) {
+  $food = mysqli_real_escape_string($conn, $_POST['food']);
+  $price = (float)$_POST['price'];
+  $qty = (int)$_POST['qty'];
+  $total = $price * $qty;
+  $order_date = date("Y-m-d H:i:s");
+  $status = 'Ordered';
+  $customer_name = mysqli_real_escape_string($conn, $_POST['full-name']);
+  $customer_contact = mysqli_real_escape_string($conn, $_POST['contact']);
+  $customer_email = mysqli_real_escape_string($conn, $_POST['email']);
+  $customer_address = mysqli_real_escape_string($conn, $_POST['address']);
+
+  $sql2 = "
+    INSERT INTO order_table SET
+      food='$food', price=$price, quantity=$qty, total=$total, order_date='$order_date',
+      status='$status', customer_name='$customer_name',
+      customer_contact='$customer_contact', customer_email='$customer_email',
+      customer_address='$customer_address'
+  ";
+  if (mysqli_query($conn, $sql2)) {
+    $_SESSION['order'] = "<div class='text-center text-emerald-700 font-bold'>🎉 Food Ordered Successfully.</div>";
+    header("Location: " . SITEURL);
+    exit();
+  } else {
+    $_SESSION['order'] = "<div class='text-center text-red-600 font-bold'>Order Failed. Please try again!</div>";
+    header("Location: " . SITEURL);
+    exit();
+  }
+}
 ?>
 
-<?php
-  if (isset($_POST['submit'])) {
-    $food = mysqli_real_escape_string($conn, $_POST['food']);
-    $price = (float)$_POST['price'];
-    $qty = (int)$_POST['qty'];
-    $total = $price * $qty;
-    $order_date = date("Y-m-d H:i:s");
-    $status = 'Ordered';
-    $customer_name = mysqli_real_escape_string($conn, $_POST['full-name']);
-    $customer_contact = mysqli_real_escape_string($conn, $_POST['contact']);
-    $customer_email = mysqli_real_escape_string($conn, $_POST['email']);
-    $customer_address = mysqli_real_escape_string($conn, $_POST['address']);
-
-    $sql2 = "
-      INSERT INTO order_table SET
-        food='$food', price=$price, quantity=$qty, total=$total, order_date='$order_date',
-        status='$status', customer_name='$customer_name',
-        customer_contact='$customer_contact', customer_email='$customer_email',
-        customer_address='$customer_address'
-    ";
-    if (mysqli_query($conn, $sql2)) {
-      $_SESSION['order'] = "<div class='text-center text-green-600 font-semibold'>Food Ordered Successfully.</div>";
-      header("Location: " . SITEURL);
-    } else {
-      $_SESSION['order'] = "<div class='text-center text-red-600 font-semibold'>Order Failed. Please try again!</div>";
-      header("Location: " . SITEURL);
-    }
-  }
-?>
+<?php include('partials-frontend/menu.php');?>
 
 <style>
   /* Custom animations and transitions */
@@ -116,76 +120,99 @@
   }
 </style>
 
-<section class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-  <div class="bg-white shadow-lg rounded-lg max-w-md w-full hover-lift fade-in">
-    <div class="overflow-hidden rounded-t-lg h-48 bg-gray-200">
+<style>
+  .fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<section class="bg-stone-50 py-12 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white shadow-xl rounded-2xl max-w-lg w-full border border-stone-200/70 overflow-hidden fade-in">
+    <div class="overflow-hidden h-56 bg-stone-100 relative">
       <?php if ($image_name): ?>
         <img src="<?= SITEURL ?>images/food/<?= $image_name ?>" alt="<?= htmlspecialchars($title) ?>" 
-             class="object-cover w-full h-full image-zoom">
+             class="object-cover w-full h-full transition-transform duration-500 hover:scale-105">
       <?php else: ?>
-        <div class="flex items-center justify-center h-full text-gray-500 transition-colors duration-300 hover:text-gray-700">
+        <div class="flex items-center justify-center h-full text-stone-400 font-medium">
           No image available
         </div>
       <?php endif; ?>
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent"></div>
+      <div class="absolute bottom-4 left-6 right-6 flex justify-between items-end text-white">
+        <h2 class="text-2xl font-extrabold tracking-tight drop-shadow-sm">
+          <?= htmlspecialchars($title) ?>
+        </h2>
+        <span class="bg-white/90 backdrop-blur-md text-orange-600 font-extrabold px-3 py-1 rounded-full text-sm shadow-md">
+          ৳ <?= number_format($price, 2) ?>
+        </span>
+      </div>
     </div>
     
-    <div class="p-6 section-slide">
-      <h2 class="text-2xl font-semibold mb-2 transition-colors duration-300 hover:text-green-600">
-        <?= htmlspecialchars($title) ?>
-      </h2>
-      <p class="text-lg text-green-600 font-semibold mb-4 transition-all duration-300 hover:text-green-700 hover:scale-105">
-        ৳ <?= number_format($price, 2) ?>
-      </p>
-      <p class="text-gray-700 mb-6 transition-colors duration-300 hover:text-gray-800">
+    <div class="p-6 sm:p-8">
+      <p class="text-stone-500 text-sm leading-relaxed mb-6 border-b border-stone-100 pb-4">
         <?= htmlspecialchars($description) ?>
       </p>
 
-      <form action="" method="post" class="space-y-5">
-        <div class="transition-all duration-300 hover:bg-gray-50 hover:rounded-lg hover:p-3 hover:-m-3">
-          <label for="qty" class="block text-gray-600 font-medium mb-1 transition-colors duration-300">
+      <form action="" method="post" class="space-y-6">
+        <div>
+          <label for="qty" class="block text-stone-700 font-bold text-sm mb-2">
             Quantity
           </label>
           <input id="qty" name="qty" type="number" min="1" value="1"
-                 class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus" required>
+                 class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition font-medium" required>
           <input type="hidden" name="food" value="<?= htmlspecialchars($title) ?>">
           <input type="hidden" name="price" value="<?= htmlspecialchars($price) ?>">
         </div>
 
-        <hr class="my-4 transition-all duration-500 hover:border-green-300">
-
-        <div class="transition-all duration-300 hover:bg-gray-50 hover:rounded-lg hover:p-4 hover:-m-4">
-          <h3 class="text-xl font-semibold mb-2 transition-colors duration-300 hover:text-green-600">
+        <div>
+          <h3 class="text-lg font-bold text-stone-900 mb-3 border-b border-stone-100 pb-2">
             Delivery Details
           </h3>
-          <div class="space-y-4">
-            <input name="full-name" type="text" placeholder="Full Name"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
-                          transition-all duration-300 hover:border-green-300" required>
-            <input name="contact" type="tel" placeholder="Phone Number"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
-                          transition-all duration-300 hover:border-green-300" required>
-            <input name="email" type="email" placeholder="Email"
-                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
-                          transition-all duration-300 hover:border-green-300" required>
-            <textarea name="address" rows="3" placeholder="Delivery Address"
-                      class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 input-focus 
-                             transition-all duration-300 hover:border-green-300 resize-none" required></textarea>
+          <div class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-semibold text-stone-500 mb-1">Full Name</label>
+              <input name="full-name" type="text" placeholder="e.g. Saadman Fuad"
+                     class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition font-medium" required>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-500 mb-1">Phone Number</label>
+              <input name="contact" type="tel" placeholder="e.g. 01712345678"
+                     class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition font-medium" required>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-500 mb-1">Email Address</label>
+              <input name="email" type="email" placeholder="e.g. name@example.com"
+                     class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition font-medium" required>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-500 mb-1">Delivery Address</label>
+              <textarea name="address" rows="3" placeholder="House/Street, Area, City"
+                        class="w-full p-3 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition font-medium resize-none" required></textarea>
+            </div>
           </div>
         </div>
 
         <button type="submit" name="submit"
-                class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold 
-                       hover:bg-green-700 transition-all duration-300 button-press
-                       hover:shadow-lg hover:shadow-green-500/25 
-                       transform hover:scale-[1.02] active:scale-[0.98]
-                       focus:ring-4 focus:ring-green-500/50 focus:outline-none">
-          <span class="transition-all duration-200">Confirm Order</span>
+                class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-4 rounded-xl font-bold 
+                       shadow-lg shadow-orange-500/25 transition-all duration-200 
+                       transform hover:scale-[1.01] active:scale-[0.99]
+                       focus:ring-4 focus:ring-orange-300 focus:outline-none flex items-center justify-center gap-2">
+          <span>Confirm & Order Now</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </button>
       </form>
     </div>
   </div>
 </section>
-
-
 
 <?php include('partials-frontend/footer.php');?>

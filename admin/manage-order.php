@@ -291,13 +291,24 @@
                                                 <span class="text-sm font-semibold text-orange-600"><?php echo $sn++; ?></span>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td class="px-6 py-4">
                                             <div class="flex items-center">
-                                                <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-lg flex items-center justify-center mr-3">
+                                                <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-400 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
                                                     <i class="fas fa-utensils text-white text-sm"></i>
                                                 </div>
                                                 <div>
-                                                    <div class="text-sm font-medium text-gray-900"><?php echo $food; ?></div>
+                                                    <?php 
+                                                    if (strpos($food, ',') !== false) {
+                                                        $items = explode(',', $food);
+                                                        echo '<div class="flex flex-wrap gap-1.5 max-w-sm">';
+                                                        foreach ($items as $item_str) {
+                                                            echo '<span class="bg-orange-100 text-orange-800 text-xs font-bold px-2.5 py-1 rounded-lg border border-orange-200 shadow-2xs">' . htmlspecialchars(trim($item_str)) . '</span>';
+                                                        }
+                                                        echo '</div>';
+                                                    } else {
+                                                        echo '<div class="text-sm font-bold text-gray-900">' . htmlspecialchars($food) . '</div>';
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
                                         </td>
