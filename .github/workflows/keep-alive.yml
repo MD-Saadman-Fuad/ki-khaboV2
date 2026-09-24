@@ -1,0 +1,22 @@
+name: Database & Web Server Keep-Alive
+
+on:
+  schedule:
+    # Runs every 6 hours to keep Aiven DB and Web Server active
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping:
+    name: Ping Application Endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send HTTP Ping Request
+        run: |
+          # Replace URL below with your actual deployed website URL if different
+          TARGET_URL="${{ secrets.SITE_URL }}"
+          if [ -z "$TARGET_URL" ]; then
+            TARGET_URL="http://localhost/ki-khaboV2/"
+          fi
+          echo "Pinging $TARGET_URL/ping.php ..."
+          curl -sS "${TARGET_URL}ping.php" || echo "Ping request executed."
